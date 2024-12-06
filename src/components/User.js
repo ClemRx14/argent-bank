@@ -1,9 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import argentBankLogo from '../assets/img/argentBankLogo.png';
+import { logout } from '../features/loginSlice';
+import { useDispatch } from 'react-redux';
+
 
 
 const User = () => {
+
+  const dispatch = useDispatch();
+
+  const deconnexionEffective = () => {
+    dispatch(logout());
+    localStorage.removeItem("userToken");
+  };
+  
     return (
       <div className="main bg-dark">
         <nav className="main-nav">
@@ -20,7 +31,7 @@ const User = () => {
               <i className="fa fa-user-circle"></i>
               Tony
             </Link>
-            <Link className="main-nav-item" to="/">
+            <Link className="main-nav-item" to="/" onClick={deconnexionEffective}>
               <i className="fa fa-sign-out"></i>
               Sign Out
             </Link>
@@ -73,3 +84,4 @@ const User = () => {
   };
   
   export default User;
+  

@@ -1,8 +1,51 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import argentBankLogo from '../assets/img/argentBankLogo.png';
+import { loginUser } from '../features/loginSlice.js';
 
 function SignIn() {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+// Recupération de l'état redux pour vérifier si l'user est connecté ou non 
+  const { redirectionUser, error } = useSelector((state) => state.user || {});
+
+  useEffect(() =>{
+    if (redirectionUser) {
+      navigate('/user');
+    }
+  }, [redirectionUser, navigate]);
+
+  const envoieForm = (event) => {
+    event.preventDefault();
+    dispatch(loginUser({ email: username, password }))
+    .then(() => {
+      if(rememberMe) {
+        localStorage.setItem("userEmail", username);
+        localStorage.setItem("userPassword", password);
+      }
+    })
+  };
+
+
+  useEffect(() => {
+    const storageEmail = localStorage.getItem("userEmail");
+    const storagePassword = localStorage.getItem("userPassword");
+  
+    if (storageEmail && storagePassword) {
+      setUsername(storageEmail);
+      setPassword(storagePassword);
+      setRememberMe(true);
+    }
+  }, []);
+
   return (
     <div>
       <nav className="main-nav">
@@ -26,12 +69,15 @@ function SignIn() {
         <section className="sign-in-content">
           <i className="fa fa-user-circle sign-in-icon"></i>
           <h1>Sign In</h1>
-          <form>
+
+          <form onSubmit={envoieForm}>
             <div className="input-wrapper">
               <label htmlFor="username">Username</label>
               <input
                 type="text"
                 id="username"
+                value={username}
+                onChange={(envoie) => setUsername(envoie.target.value)}
               />
             </div>
             <div className="input-wrapper">
@@ -39,12 +85,16 @@ function SignIn() {
               <input
                 type="password"
                 id="password"
+                value={password}
+                onChange={(envoie) => setPassword(envoie.target.value)}
               />
             </div>
             <div className="input-remember">
               <input
                 type="checkbox"
                 id="remember-me"
+                checked={rememberMe}
+                onChange={() => setRememberMe(!rememberMe)}
               />
               <label htmlFor="remember-me">Remember me</label>
             </div>

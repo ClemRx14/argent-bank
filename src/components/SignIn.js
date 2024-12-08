@@ -23,6 +23,7 @@ function SignIn() {
     }
   }, [redirectionUser, navigate]);
 
+  // Initialement nommé envoie mais event respecte les normes
   const envoieForm = (event) => {
     event.preventDefault();
     dispatch(loginUser({ email: username, password }))
@@ -77,6 +78,7 @@ function SignIn() {
                 type="text"
                 id="username"
                 value={username}
+                // envoie = event
                 onChange={(envoie) => setUsername(envoie.target.value)}
               />
             </div>

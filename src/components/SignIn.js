@@ -15,7 +15,7 @@ function SignIn() {
   const navigate = useNavigate();
 
 // Recupération de l'état redux pour vérifier si l'user est connecté ou non 
-  const { redirectionUser, error } = useSelector((state) => state.user || {});
+  const { redirectionUser, error } = useSelector((state) => state.login || {});
 
   useEffect(() =>{
     if (redirectionUser) {

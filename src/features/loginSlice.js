@@ -22,10 +22,9 @@ const initialState = {
         }
 
         const data = await response.json();
-        console.log('Données retournées:', data);
         if (data.body && data.body.token){
             document.cookie = `userToken=${data.body.token}; path=/; max-age=3600; secure`;
-            // Stocker le token dans un cookie d'une durée de une heure ainsi le token n'est pas apparant directement (faille XSS)
+            // Stocker le token dans un cookie d'une durée de une heure.
         }
         return data;
 
@@ -52,7 +51,6 @@ const initialState = {
         builder
     // Si appel api fullfilled
     .addCase(loginUser.fulfilled, (state, action) => {
-        console.log('Connexion réussie, données utilisateur:', action.payload);
         state.user = action.payload;
         state.userLog = true;
         state.error = null;
@@ -60,7 +58,6 @@ const initialState = {
     })
     // Cas si l'appel échoue 
     .addCase(loginUser.rejected, (state, action) => {
-        console.log('Erreur de connexion:', action.payload);
         state.error = action.payload;
         state.userLog = false;
     });

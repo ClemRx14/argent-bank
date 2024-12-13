@@ -30,19 +30,19 @@ function SignIn() {
     .then(() => {
       if(rememberMe) {
         localStorage.setItem("userEmail", username);
-        localStorage.setItem("userPassword", password);
       }
-    })
+      else {
+        localStorage.removeItem("userEmail");
+      }
+    });
   };
 
+// Préremplissage de l'émail si remember me est activé.
 
   useEffect(() => {
-    const storageEmail = localStorage.getItem("userEmail");
-    const storagePassword = localStorage.getItem("userPassword");
-  
-    if (storageEmail && storagePassword) {
-      setUsername(storageEmail);
-      setPassword(storagePassword);
+    const emailSaved = localStorage.getItem('userEmail');
+    if (emailSaved) {
+      setUsername(emailSaved);
       setRememberMe(true);
     }
   }, []);
@@ -70,6 +70,13 @@ function SignIn() {
         <section className="sign-in-content">
           <i className="fa fa-user-circle sign-in-icon"></i>
           <h1>Sign In</h1>
+
+          {/* Si des erreurs dans le form d'envoie */}
+          {error && (
+            <div className='error-message'>
+              {error}
+            </div>
+          )}
 
           <form onSubmit={envoieForm}>
             <div className="input-wrapper">

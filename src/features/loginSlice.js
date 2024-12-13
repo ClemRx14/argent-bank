@@ -24,7 +24,8 @@ const initialState = {
         const data = await response.json();
         console.log('Données retournées:', data);
         if (data.body && data.body.token){
-            localStorage.setItem('userToken', data.body.token);
+            document.cookie = `userToken=${data.body.token}; path=/; max-age=3600; secure`;
+            // Stocker le token dans un cookie d'une durée de une heure ainsi le token n'est pas apparant directement (faille XSS)
         }
         return data;
 
@@ -40,7 +41,7 @@ const initialState = {
     reducers: {
         // Action pour logout l'user
         logout: (state) => {
-            localStorage.removeItem("userToken");
+            document.cookie = "userToken=; path=/; max-age=0; secure; samesite=strict";
             state.user = null;
             state.userLog = false;
             state.error = null;

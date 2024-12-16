@@ -46,6 +46,11 @@ const initialState = {
             state.error = null;
             state.redirectionUser = false;
         },
+        loggedUser: (state, action) => {
+            state.user = { token: action.payload.token };
+            state.userLog = true;
+            state.redirectionUser = true;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -66,4 +71,4 @@ const initialState = {
 
 
 export default loginSlice.reducer;
-export const { logout } = loginSlice.actions;
+export const { logout, loggedUser } = loginSlice.actions;

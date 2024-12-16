@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import argentBankLogo from '../assets/img/argentBankLogo.png';
 import { logout } from '../features/loginSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchUser } from '../features/userSlice';
 
 
 
@@ -15,7 +17,14 @@ const User = () => {
     localStorage.removeItem("userToken");
   };
 
-  const username = useSelector((state) => state.user.username);
+  // Récupératio données User 
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
+  const {username} = useSelector((state) => state.user);
+  
   
     return (
       <div className="main bg-dark">

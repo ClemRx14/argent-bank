@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import argentBankLogo from '../assets/img/argentBankLogo.png';
 import { logout } from '../features/loginSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchUser } from '../features/userSlice';
-
+import { updateUser, updateUsername } from '../features/userSlice';
 
 
 const User = () => {
@@ -23,9 +23,26 @@ const User = () => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  const {username} = useSelector((state) => state.user);
-  
-  
+  const {username, firstName, lastName} = useSelector((state) => state.user);
+
+  // Gestion du form pour le changement du pseudo
+
+  const [editUsername, setNewEdit] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+
+  const envoieUpdateUsername = async (event) => {
+    event.preventDefault();
+    
+    try {
+      await dispatch(updateUser(newUsername));
+      dispatch(updateUsername(newUsername));
+      setNewEdit(false);
+
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du nom d\'utilisateur:', error);
+    }
+  }
+
     return (
       <div className="main bg-dark">
         <nav className="main-nav">
@@ -50,8 +67,56 @@ const User = () => {
         </nav>
   
         <div className="header">
-          <h1>Welcome back<br />{username}!</h1>
-          <button className="edit-button">Edit Name</button>
+          <h1 className={editUsername ? 'edit-header' : ''}>
+            {editUsername ? 'Edit user info' : `Welcome back, ${username}!`}
+          </h1>
+
+          {/* Gestion du form */}
+
+          {!editUsername? (
+          <button className="edit-button" onClick={() => setNewEdit(true)}>Edit Name</button>
+          ) : (
+            <form onSubmit={envoieUpdateUsername}>
+              <section className='user-info'>
+                <div className='user-info-labels'>
+
+                  <div className='form'>
+                  <label htmlFor="username">Username:</label>
+                  </div>
+                  <div className='form'>
+                  <label htmlFor="firstName">First Name:</label>
+                  </div>
+                  <div className='form'>
+                  <label htmlFor="lastName">Last Name:</label>
+                  </div>
+
+                </div>
+
+                <div className='user-info-valeurs'>
+
+                  <div className='form'>
+                    <input type='text' id='username' value={newUsername} onChange={(event) => setNewUsername(event.target.value)}
+                required/>
+                  </div>
+                  <div className='form'>
+                    <input type='text' id='firstname' value={firstName} disabled/>
+                  </div>
+                  <div className='form'>
+                    <input type='text' id='lastname' value={lastName} disabled/>
+                  </div>
+                </div>
+              </section>
+
+               <div className='boutons-form'>
+                <button type='submit'>
+                  Save
+                </button>
+                <button type='button' onClick={() => setNewEdit(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
         </div>
   
         <h2 className="sr-only">Accounts</h2>

@@ -71,7 +71,7 @@ body {
 }
 
 .hero {
-  background-image: url('./assets/img/bank-tree.jpeg');
+  background-image: url('./assets/img/bank-tree.webp');
   background-position: 0 -50px;
   background-size: cover;
   background-repeat: no-repeat;
@@ -274,6 +274,55 @@ body {
   border-color: #00bc77;
   background-color: #00bc77;
   color: #fff;
+}
+
+/* Gestion css du form  nouveau pseudo */
+
+.edit-header {
+  color: black;
+}
+
+.user-info {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.user-info-labels, .user-info-valeurs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  font-weight: 600px;
+}
+
+.form label {
+  width: 150px;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+.form input {
+  width: 200px;
+  height: 30px;
+
+}
+
+/* Boutons form */
+
+.boutons-form {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.boutons-form button {
+  height: 30px;
+  width: 10%;
 }
 
 @media (min-width: 720px) {

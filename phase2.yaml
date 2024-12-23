@@ -1,0 +1,418 @@
+swagger: "2.0"
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: "1.0.0"
+  termsOfService: "http://swagger.io/terms/"
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /user/login:
+    post:
+      tags:
+        - User Module
+      summary: Login
+      description: API for user login
+      parameters:
+        - in: body
+          name: body
+          description: Login payload
+          required: true
+          schema:
+            $ref: "#/definitions/Login"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: "#/definitions/LoginResponse"
+        "400":
+          description: Invalid fields
+        "500":
+          description: Internal server error
+
+  /user/signup:
+    post:
+      tags:
+        - User Module
+      summary: Signup
+      description: API for user signup
+      parameters:
+        - in: body
+          name: body
+          description: Signup payload
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Signup successful
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid fields
+        "500":
+          description: Internal server error
+
+  /user/profile:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Get user profile
+      description: API for fetching a user profile
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid fields
+        "500":
+          description: Internal server error
+
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Update user profile
+      description: API for updating a user profile
+      parameters:
+        - in: body
+          name: body
+          description: Update user profile attributes
+          required: true
+          schema:
+            $ref: "#/definitions/UserProfile"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User profile updated successfully
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid fields
+        "500":
+          description: Internal server error
+
+  /user/transactions:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Create a transaction
+      description: API for creating a new transaction
+      parameters:
+        - in: body
+          name: body
+          description: Transaction payload
+          required: true
+          schema:
+            type: object
+            properties:
+              accountId:
+                type: string
+                description: ID of the account for which the transaction is being created
+              amount:
+                type: number
+                format: float
+                description: Amount of the transaction
+              date:
+                type: string
+                format: date
+                description: Date of the transaction
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transaction created successfully
+          schema:
+            $ref: "#/definitions/TransactionResponse"
+        "400":
+          description: Invalid transaction data
+        "500":
+          description: Internal server error
+
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Get transactions
+      description: API for fetching transactions
+      parameters:
+        - in: query
+          name: accountId
+          required: true
+          type: string
+          description: ID of the account for which transactions are being fetched
+        - in: query
+          name: month
+          required: false
+          type: string
+          description: Month (in YYYY-MM format) to filter transactions
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transactions retrieved successfully
+          schema:
+            $ref: "#/definitions/TransactionsResponse"
+        "400":
+          description: Invalid account ID or date
+        "500":
+          description: Internal server error
+
+  /user/transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Get transaction details
+      description: API for fetching details of a specific transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: ID of the transaction to fetch
+      responses:
+        "200":
+          description: Transaction details retrieved successfully
+          schema:
+            $ref: "#/definitions/TransactionDetailResponse"
+        "400":
+          description: Invalid transaction ID
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal server error
+
+  /user/transactions/{transactionId}/comments:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Comments Module
+      summary: Add a comment
+      description: API for adding a comment to a transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: ID of the transaction to which the comment will be added
+        - in: body
+          name: body
+          description: Comment payload
+          required: true
+          schema:
+            $ref: "#/definitions/Comment"
+      responses:
+        "200":
+          description: Comment added successfully
+        "400":
+          description: Invalid comment data
+        "500":
+          description: Internal server error
+
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - Comments Module
+      summary: Update a comment
+      description: API for updating a comment on a transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: ID of the transaction containing the comment
+        - in: body
+          name: body
+          description: Comment payload for update
+          required: true
+          schema:
+            $ref: "#/definitions/Comment"
+      responses:
+        "200":
+          description: Comment updated successfully
+        "400":
+          description: Invalid comment data
+        "404":
+          description: Comment not found
+        "500":
+          description: Internal server error
+
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - Comments Module
+      summary: Delete a comment
+      description: API for deleting a comment from a transaction
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: ID of the transaction containing the comment
+        - in: query
+          name: commentId
+          required: true
+          type: string
+          description: ID of the comment to delete
+      responses:
+        "200":
+          description: Comment deleted successfully
+        "400":
+          description: Invalid comment ID
+        "404":
+          description: Comment not found
+        "500":
+          description: Internal server error
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  User:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      userName:
+        type: string
+
+  Login:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+
+  ApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          id:
+            type: string
+          email:
+            type: string
+
+  UserProfile:
+    type: object
+    properties:
+      userName:
+        type: string
+
+  TransactionResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          transactionId:
+            type: string
+          accountId:
+            type: string
+          amount:
+            type: number
+            format: float
+          date:
+            type: string
+            format: date
+
+  TransactionsResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: array
+        items:
+          type: object
+          properties:
+            transactionId:
+              type: string
+            amount:
+              type: number
+              format: float
+            date:
+              type: string
+              format: date
+
+  TransactionDetailResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          transactionId:
+            type: string
+          accountId:
+            type: string
+          amount:
+            type: number
+            format: float
+          date:
+            type: string
+            format: date
+          description:
+            type: string
+          comments:
+            type: array
+            items:
+              $ref: "#/definitions/Comment"
+
+  Comment:
+    type: object
+    properties:
+      commentId:
+        type: string
+      content:
+        type: string
+      date:
+        type: string
+        format: date-time

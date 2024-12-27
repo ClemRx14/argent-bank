@@ -104,44 +104,6 @@ paths:
           description: Internal server error
 
   /user/transactions:
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Create a transaction
-      description: API for creating a new transaction
-      parameters:
-        - in: body
-          name: body
-          description: Transaction payload
-          required: true
-          schema:
-            type: object
-            properties:
-              accountId:
-                type: string
-                description: ID of the account for which the transaction is being created
-              amount:
-                type: number
-                format: float
-                description: Amount of the transaction
-              date:
-                type: string
-                format: date
-                description: Date of the transaction
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Transaction created successfully
-          schema:
-            $ref: "#/definitions/TransactionResponse"
-        "400":
-          description: Invalid transaction data
-        "500":
-          description: Internal server error
-
     get:
       security:
         - Bearer: []
@@ -336,27 +298,6 @@ definitions:
     properties:
       userName:
         type: string
-
-  TransactionResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          transactionId:
-            type: string
-          accountId:
-            type: string
-          amount:
-            type: number
-            format: float
-          date:
-            type: string
-            format: date
 
   TransactionsResponse:
     type: object
